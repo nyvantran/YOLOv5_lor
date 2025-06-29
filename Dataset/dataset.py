@@ -63,21 +63,21 @@ class Path22Dataset(Dataset):
         return len(self.images)
 
 
-transform = A.Compose([
-    A.Mosaic(
-        grid_yx=(2, 2),
-        target_size=(530, 520),
-        cell_shape=(520, 520),
-        center_range=(0.5, 0.5),
-        fit_mode="cover",
-        p=1.0
-    )
-], bbox_params=A.BboxParams(format='yolo', min_visibility=0.4, label_fields=[]))
+# transform = A.Compose([
+#     A.Mosaic(
+#         grid_yx=(2, 2),
+#         target_size=(530, 520),
+#         cell_shape=(520, 520),
+#         center_range=(0.5, 0.5),
+#         fit_mode="cover",
+#         p=1.0
+#     )
+# ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.4, label_fields=[]))
 
 
 def main():
     import matplotlib.pyplot as plt
-    import numpy as np
+    from utills.DataAugmentation import DataAugmentation
     images_dir = "Datatest/img1"
     labels_file = "Datatest/gt/gt.txt"
     dataset = Path22Dataset(images_dir, labels_file)
@@ -95,18 +95,16 @@ def main():
             'bboxes': (dataset[3][1])
         }
     ]
-    trans = transform(
-        image=dataset[0][0],
-        bboxes=(dataset[0][1]),
+    trans = DataAugmentation(
+        image=dataset[1][0],
+        bboxes=dataset[1][1],
         mosaic_metadata=mosaic_data
     )
     from utills.drawBoundingBoxes import drawBboxes
     transformed_image = trans['image']
     boxes = trans['bboxes']
     tran = drawBboxes(transformed_image, boxes, class_names=None, colors=None, thickness=2)
-    plt.imshow(tran)
-    plt.axis('off')
-    plt.show()
+
 
 
 if __name__ == "__main__":
