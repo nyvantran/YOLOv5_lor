@@ -4,7 +4,7 @@ import albumentations as A
 output_size = (640, 640)
 center_range = (0.5, 0.5)
 fit_mode = "cover"
-p = 1.0  # Probability of applying the augmentation
+p = 0.5  # Probability of applying the augmentation
 scale_limit = (-0.1, 0.1)  # Scale range for RandomAffine
 translate_percent = (-0.15, 0.15)  # Translation percentage for RandomAffine
 
