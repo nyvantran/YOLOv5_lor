@@ -1,10 +1,11 @@
 import albumentations as A
+import utills.MixupAugmentation as MixupAugmentation
 
 # configurations for data augmentation
 output_size = (640, 640)
 center_range = (0.5, 0.5)
 fit_mode = "cover"
-p = 0.5  # Probability of applying the augmentation
+p = 1  # Probability of applying the augmentation
 scale_limit = (-0.1, 0.1)  # Scale range for RandomAffine
 translate_percent = (-0.15, 0.15)  # Translation percentage for RandomAffine
 
@@ -22,6 +23,7 @@ MosaicAugmentation = A.Mosaic(
     p=p
 )
 
+# Random affine transformations including rotation, scaling, and translation
 RandomAffine = A.Compose([
     A.SafeRotate(
         limit=(-90, 90),
@@ -47,11 +49,15 @@ RandomAffine = A.Compose([
 ], p=p,
 )
 
+# Random horizontal flip for data augmentation
 RandomHorizontalFlip = A.HorizontalFlip(p=p)
+# Mixup augmentation for blending images and labels
 
+
+# Main data augmentation pipeline combining all the above transformations
 DataAugmentation = A.Compose([
-    MosaicAugmentation,
+    # MosaicAugmentation,
     RandomAffine,
     RandomHorizontalFlip,
     A.Resize(height=output_size[0], width=output_size[1], p=1.0)
-], bbox_params=A.BboxParams(format='yolo', min_visibility=0.4, label_fields=[]), p=p)
+], bbox_params=A.BboxParams(format='yolo', min_visibility=0.4, label_fields=[], clip=True), p=p)
